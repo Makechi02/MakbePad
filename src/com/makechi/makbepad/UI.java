@@ -75,8 +75,11 @@ public class UI extends JFrame {
     String[] lookNames = new String[looks.length];
     JRadioButtonMenuItem[] radio = new JRadioButtonMenuItem[looks.length];
 
+    ImageIcon logo = new ImageIcon("logo2.png");
+
     public UI() {
         super("MAKBEPAD");
+        setIconImage(logo.getImage());
         setSize(width + 180, height + 130);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -179,7 +182,7 @@ public class UI extends JFrame {
         undo.setAccelerator(KeyStroke.getKeyStroke("ctrl Z"));
         cut.setAccelerator(KeyStroke.getKeyStroke("ctrl X"));
         copy.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
-        paste.setAccelerator(KeyStroke.getKeyStroke("ctrl V"));
+        paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
         delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         bing.setAccelerator(KeyStroke.getKeyStroke("ctrl E"));
         find.setAccelerator(KeyStroke.getKeyStroke("ctrl F"));
@@ -214,6 +217,7 @@ public class UI extends JFrame {
         cut.addActionListener(e -> ta.cut());
         copy.addActionListener(e -> ta.copy());
         paste.addActionListener(e -> ta.paste());
+        about.addActionListener(e -> new AbtDialog(this));
 
         MenuListener menuListener = new MenuListener() {
             public void menuSelected(MenuEvent evvvv) {
@@ -300,12 +304,47 @@ public class UI extends JFrame {
         return dateObj.format(formatter);
     }
 
-    private void changeTheLookAndFeel(int value) {
+    void changeTheLookAndFeel(int value) {
         try {
             UIManager.setLookAndFeel(looks[value].getClassName());
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+    }
+
+    private class AbtDialog extends JDialog {
+        String name = "<html>" +
+                "<p><big>MAKBEPAD<big></p>" +
+                "<p>Version: 1.0.0</p>" +
+                "<p>Copyright 2022</p><br>" +
+                "</html>";
+        String details = "<html>" +
+                "<p>A huge <strong>Thanks</strong> to you for using this app</p>" +
+                "<p>Your feedback and comments will be highly appreciated<br>and so will bug reports</p>" +
+                "<p>Email: <em>makechieric9@gmail.com</em></p>" +
+                "</html>";
+        JLabel nameLabel = new JLabel(name);
+        JLabel detailsLabel = new JLabel(details);
+        JButton ok = new JButton("OK");
+        public AbtDialog(JFrame owner) {
+            super(owner, "ABOUT MAKBEPAD", true);
+            setSize(width - 350, height);
+            setLocationRelativeTo(owner);
+            GridBagLayout layout = new GridBagLayout();
+            GridBagConstraints cons = new GridBagConstraints();
+            setLayout(layout);
+            cons.gridy = 0;
+            cons.anchor = GridBagConstraints.WEST;
+            add(nameLabel, cons);
+            cons.gridy = 1;
+            add(detailsLabel, cons);
+            cons.gridy = 3;
+            cons.anchor = GridBagConstraints.EAST;
+            add(ok, cons);
+            ok.addActionListener(e -> setVisible(false));
+            ok.setFocusable(false);
+            setVisible(true);
         }
     }
 
