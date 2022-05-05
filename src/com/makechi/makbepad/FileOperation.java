@@ -1,32 +1,30 @@
 package com.makechi.makbepad;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 
-class FileOperation {
+public class FileOperation {
     UI npd;
-
     boolean saved;
     boolean newFileFlag;
     String fileName;
-    String applicationTitle = "Makbepad";
-
+    String appTitle = "Makbepad";
     File fileRef;
     JFileChooser chooser;
 
     FileOperation(UI npd) {
         this.npd = npd;
-
         saved = true;
         newFileFlag = true;
         fileName = "Untitled";
         fileRef = new File(fileName);
-        this.npd.setTitle(fileName + " - " + applicationTitle);
+        this.npd.setTitle(fileName + " - " + appTitle);
 
         chooser = new JFileChooser();
-        //chooser.addChoosableFileFilter(new MyFileFilter(".java", "Java Source Files(*.java)"));
-        //chooser.addChoosableFileFilter(new MyFileFilter(".txt", "Text Files(*.txt)"));
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Java Source Files(*.java)", ".java"));
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Text Files(*.txt)", ".txt"));
         chooser.setCurrentDirectory(new File("."));
     }
 
@@ -41,7 +39,7 @@ class FileOperation {
         return true;
     }
 
-    void saveThisFile() {
+    void saveFile() {
         if (!newFileFlag) {
             saveFile(fileRef);
             return;
@@ -116,7 +114,7 @@ class FileOperation {
         if (!openFile(temp)) {
             fileName = "Untitled";
             saved = true;
-            this.npd.setTitle(fileName + " - " + applicationTitle);
+            this.npd.setTitle(fileName + " - " + appTitle);
         }
         if (!temp.canWrite())
             newFileFlag = true;
@@ -131,7 +129,7 @@ class FileOperation {
                 newFileFlag = true;
             }
             fileRef = temp;
-            npd.setTitle(fileName + " - " + applicationTitle);
+            npd.setTitle(fileName + " - " + appTitle);
             npd.bottom.setText("File : " + temp.getPath() + " saved/opened successfully.");
             newFileFlag = false;
         } else {
@@ -143,7 +141,7 @@ class FileOperation {
         String strMsg = "<html>The text in the " + fileName + " file has been changed.<br>" +
                 "Do you want to save the changes?<html>";
         if (!saved) {
-            int x = JOptionPane.showConfirmDialog(this.npd, strMsg, applicationTitle,
+            int x = JOptionPane.showConfirmDialog(this.npd, strMsg, appTitle,
                     JOptionPane.YES_NO_CANCEL_OPTION);
             if (x == JOptionPane.CANCEL_OPTION)
                 return false;
@@ -160,6 +158,6 @@ class FileOperation {
         fileRef = new File(fileName);
         saved = true;
         newFileFlag = true;
-        this.npd.setTitle(fileName + " - " + applicationTitle);
+        this.npd.setTitle(fileName + " - " + appTitle);
     }
 }

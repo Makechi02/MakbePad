@@ -1,19 +1,23 @@
 package com.makechi.makbepad;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class UI extends JFrame {
     Toolkit kit = Toolkit.getDefaultToolkit();
-    Dimension screensize = kit.getScreenSize();
-    int width = screensize.width / 2;
-    int height = screensize.height / 2;
+    Dimension screen = kit.getScreenSize();
+    int width = screen.width / 2;
+    int height = screen.height / 2;
+
+    FileOperation fileHandler;
+    String applicationName = "Makbepad";
 
     JMenuBar mb = new JMenuBar();
     JMenu filemenu = new JMenu("File");
@@ -77,12 +81,17 @@ public class UI extends JFrame {
 
     ImageIcon logo = new ImageIcon("logo2.png");
 
+    FontChooser obj;
+
     public UI() {
-        super("MAKBEPAD");
+        String fileName = "Untitled";
+        setTitle(fileName + " - " + applicationName);
         setIconImage(logo.getImage());
         setSize(width + 180, height + 130);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        fileHandler = new FileOperation(this);
 
         for (int i = 0; i < looks.length; i++) {
             lookNames[i] = looks[i].getName();
@@ -99,7 +108,7 @@ public class UI extends JFrame {
             group.add(radio[count]);
         }
 
-        radio[1].setSelected(true);
+        radio[3].setSelected(true);
 
         filemenu.add(newItem);
         filemenu.add(newWindow);
@@ -205,7 +214,10 @@ public class UI extends JFrame {
         helpMenu.setMnemonic('H');
         newWindow.setDisplayedMnemonicIndex(4);
 
-        quit.addActionListener(e -> System.exit(0));
+        quit.addActionListener(e -> {
+            if (fileHandler.confirmSave())
+                System.exit(0);
+        });
         statusBar.setState(true);
         statusBar.addActionListener(e -> bottomBar.setVisible(statusBar.getState()));
         wrap.addActionListener(e -> ta.setLineWrap(wrap.getState()));
@@ -218,6 +230,19 @@ public class UI extends JFrame {
         copy.addActionListener(e -> ta.copy());
         paste.addActionListener(e -> ta.paste());
         about.addActionListener(e -> new AbtDialog(this));
+        open.addActionListener(e -> fileHandler.openFile());
+        saveAs.addActionListener(e -> fileHandler.saveAsFile());
+        save.addActionListener(e -> fileHandler.saveFile());
+        newItem.addActionListener(e -> fileHandler.newFile());
+        newWindow.addActionListener(e -> new UI());
+        fnt.addActionListener(e -> {
+            obj = new FontChooser();
+            obj.setVisible(true);
+            setFont(obj.getFont());
+            mb.setFont(obj.getFont());
+            ta.setFont(obj.getFont());
+            SwingUtilities.updateComponentTreeUI(this);
+        });
 
         MenuListener menuListener = new MenuListener() {
             public void menuSelected(MenuEvent evvvv) {
@@ -274,8 +299,23 @@ public class UI extends JFrame {
             bottom.setText("Ln " + (lineNumber + 1) + ", Col " + (column + 1));
         });
 
+        DocumentListener myListener = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) { fileHandler.saved = false; }
+            public void removeUpdate(DocumentEvent e) { fileHandler.saved = false; }
+            public void insertUpdate(DocumentEvent e) { fileHandler.saved = false; }
+        };
+        ta.getDocument().addDocumentListener(myListener);
+
+        WindowListener frameClose = new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                if (fileHandler.confirmSave())
+                    System.exit(0);
+            }
+        };
+        addWindowListener(frameClose);
+
         try {
-            UIManager.setLookAndFeel(looks[1].getClassName());
+            UIManager.setLookAndFeel(looks[3].getClassName());
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
             e.printStackTrace();
