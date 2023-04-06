@@ -32,7 +32,7 @@
         private final JCheckBoxMenuItem statusBar = new JCheckBoxMenuItem("Status Bar");
 
         JTextArea textarea = new JTextArea();
-        private final JPanel bottombar = new JPanel();
+        private final JPanel bottom_bar = new JPanel();
         JLabel bottom = new JLabel("Ln 1, Col 1");
 
         private final UIManager.LookAndFeelInfo[] looks = UIManager.getInstalledLookAndFeels();
@@ -69,7 +69,7 @@
 
             radio[3].setSelected(true);
 
-            JMenuBar menubar = new JMenuBar();
+            JMenuBar menu_bar = new JMenuBar();
 
             JMenu fileMenu = new JMenu("File");
             JMenuItem newItem = new JMenuItem("New", 'N');
@@ -90,7 +90,7 @@
             fileMenu.addSeparator();
             JMenuItem quit = new JMenuItem("Quit", 'Q');
             fileMenu.add(quit);
-            menubar.add(fileMenu);
+            menu_bar.add(fileMenu);
 
             JMenu editMenu = new JMenu("Edit");
             editMenu.add(undo);
@@ -112,7 +112,7 @@
             editMenu.add(select);
             JMenuItem tme = new JMenuItem("Time/Date", 'D');
             editMenu.add(tme);
-            menubar.add(editMenu);
+            menu_bar.add(editMenu);
 
             JMenu formatMenu = new JMenu("Format");
             formatMenu.add(wrap);
@@ -123,7 +123,7 @@
             formatMenu.add(txtColor);
             JMenuItem bgColor = new JMenuItem("Set Background...", 'B');
             formatMenu.add(bgColor);
-            menubar.add(formatMenu);
+            menu_bar.add(formatMenu);
 
             JMenu zoom = new JMenu("Zoom");
             JMenuItem in = new JMenuItem("Zoom In");
@@ -136,7 +136,7 @@
             viewMenu.add(zoom);
             viewMenu.add(statusBar);
             viewMenu.add(look);
-            menubar.add(viewMenu);
+            menu_bar.add(viewMenu);
             JMenu helpMenu = new JMenu("Help");
             JMenuItem viewHelp = new JMenuItem("View Help", 'H');
             helpMenu.add(viewHelp);
@@ -145,14 +145,14 @@
             helpMenu.addSeparator();
             JMenuItem about = new JMenuItem("About Makbepad", 'A');
             helpMenu.add(about);
-            menubar.add(helpMenu);
+            menu_bar.add(helpMenu);
 
-            setJMenuBar(menubar);
+            setJMenuBar(menu_bar);
 
-            bottombar.add(bottom);
+            bottom_bar.add(bottom);
             JScrollPane scrollPane = new JScrollPane(textarea);
             add(scrollPane);
-            add(bottombar, BorderLayout.SOUTH);
+            add(bottom_bar, BorderLayout.SOUTH);
             add(new JLabel("  "), BorderLayout.EAST);
             add(new JLabel("  "), BorderLayout.WEST);
 
@@ -219,7 +219,7 @@
             });
 
             statusBar.setState(true);
-            statusBar.addActionListener(e -> bottombar.setVisible(statusBar.getState()));
+            statusBar.addActionListener(e -> bottom_bar.setVisible(statusBar.getState()));
             wrap.addActionListener(e -> textarea.setLineWrap(wrap.getState()));
             tme.addActionListener(e -> textarea.append(getDate()));
             txtColor.addActionListener(e -> setTextColor());
@@ -284,7 +284,7 @@
         void goTo() {
             try {
                 int lineNumber = textarea.getLineOfOffset(textarea.getCaretPosition()) + 1;
-                String line = JOptionPane.showInputDialog(this, "Enter Line Number:", "" + lineNumber);
+                String line = JOptionPane.showInputDialog(this, "Enter Line Number:", String.valueOf(lineNumber));
                 if (line == null) {return; }
                 lineNumber = Integer.parseInt(line);
                 textarea.setCaretPosition(textarea.getLineStartOffset(lineNumber - 1));

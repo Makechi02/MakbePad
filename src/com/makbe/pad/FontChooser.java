@@ -21,36 +21,12 @@ public class FontChooser extends JDialog {
     private Font font;
     private int returnStatus = RET_CANCEL;
 
-    public FontChooser(JFrame owner, Font font) {
-        super(owner);
-        this.font = font;
-        initComponents();
-        label.setFont(font);
-        setVisible(true);
-    }
-
     public FontChooser(JFrame owner) {
         super(owner);
         this.font = new Font("Dialog", Font.PLAIN, 12);
         initComponents();
         label.setFont(font);
         setLocationRelativeTo(owner);
-        setVisible(true);
-    }
-
-    public FontChooser(Font font) {
-        super((JFrame) null);
-        this.font = font;
-        initComponents();
-        label.setFont(font);
-        setVisible(true);
-    }
-
-    public FontChooser() {
-        super((JFrame) null);
-        this.font = new Font("Dialog", Font.PLAIN, 12);
-        initComponents();
-        label.setFont(font);
         setVisible(true);
     }
 
@@ -138,7 +114,7 @@ public class FontChooser extends JDialog {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                closeDialog(evt);
+                closeDialog();
             }
         });
     }
@@ -178,7 +154,7 @@ public class FontChooser extends JDialog {
         doClose(RET_CANCEL);
     }
 
-    private void closeDialog(WindowEvent evt) {
+    private void closeDialog() {
         doClose(RET_CANCEL);
     }
 
